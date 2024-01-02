@@ -1,21 +1,41 @@
-// [Template no Kotlin Playground](https://pl.kotl.in/WcteahpyN)
-
 enum class Nivel { BASICO, INTERMEDIARIO, DIFICIL }
 
-class Usuario
+data class Usuario(val nome: String, val email: String)
 
-data class ConteudoEducacional(var nome: String, val duracao: Int = 60)
+data class ConteudoEducacional(var nome: String, val duracao: Int = 60, val nivel: Nivel)
+
+
+class JaInscritoException : Exception {
+    constructor() : super()
+    constructor(message: String) : super(message)
+    constructor(message: String, cause: Throwable) : super(message, cause)
+    constructor(cause: Throwable) : super(cause)
+}
+
 
 data class Formacao(val nome: String, var conteudos: List<ConteudoEducacional>) {
 
     val inscritos = mutableListOf<Usuario>()
     
     fun matricular(usuario: Usuario) {
-        TODO("Utilize o parâmetro $usuario para simular uma matrícula (usar a lista de $inscritos).")
+        try {
+            if(!inscritos.contains(usuario)) {
+           		inscritos.add(usuario)
+                println("Usuario inscrito com sucesso")
+        	} else {
+                throw JaInscritoException("Usuário já inscrito")
+            }
+        } catch(e: JaInscritoException) {
+            println(e.message)
+        }
     }
 }
 
 fun main() {
-    TODO("Analise as classes modeladas para este domínio de aplicação e pense em formas de evoluí-las.")
-    TODO("Simule alguns cenários de teste. Para isso, crie alguns objetos usando as classes em questão.")
+    val curso = ConteudoEducacional("react", 60, Nivel.BASICO)
+    val jefferson = Usuario("Jefferson", "jeffersonoliveiradev@gmail.com")
+    val DIO = Formacao("DIO", mutableListOf(curso))
+    
+    DIO.matricular(jefferson)
+    DIO.matricular(jefferson)
 }
